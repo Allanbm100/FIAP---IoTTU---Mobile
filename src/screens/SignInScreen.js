@@ -12,12 +12,13 @@ export default function SignInScreen({ navigation, setIsLogged }) {
             if (userData) {
                 const user = JSON.parse(userData);
                 if (email === user.email && senha === user.senha) {
+                    await AsyncStorage.setItem('isLoggedIn', 'true');
                     setIsLogged(true);
                 } else {
                     Alert.alert('Erro', 'Email ou senha incorretos.');
                 }
             } else {
-                Alert.alert('Erro', 'Nenhuma conta cadastrada.');
+                Alert.alert('Erro', 'Conta incorreta.');
             }
         } catch (error) {
             Alert.alert('Erro ao fazer login.');

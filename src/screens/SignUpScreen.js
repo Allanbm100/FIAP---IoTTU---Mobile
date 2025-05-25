@@ -6,6 +6,7 @@ export default function SignUpScreen({ navigation, setIsLogged }) {
     const [nome, setNome] = useState('');
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const handleCadastro = async () => {
         if (!nome || !email || !senha) {
@@ -13,13 +14,19 @@ export default function SignUpScreen({ navigation, setIsLogged }) {
             return;
         }
 
+        if (loading) return;
+        setLoading(true);
+
         const usuario = { nome, email, senha };
 
         try {
             await AsyncStorage.setItem('usuario', JSON.stringify(usuario));
+            await AsyncStorage.setItem('isLoggedIn', 'true');
+            setLoading(false);
             Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
-            setIsLogged(true);
+            navigation.replace('SignIn');
         } catch (error) {
+            setLoading(false);
             Alert.alert('Erro', 'Erro ao salvar os dados.');
         }
     };
@@ -54,8 +61,8 @@ export default function SignUpScreen({ navigation, setIsLogged }) {
                 onChangeText={setSenha}
             />
 
-            <TouchableOpacity style={styles.button} onPress={handleCadastro}>
-                <Text style={styles.buttonText}>Cadastrar</Text>
+            <TouchableOpacity style={styles.button} onPress={handleCadastro} disabled={loading}>
+                <Text style={styles.buttonText}>{loading ? 'Cadastrando...' : 'Cadastrar'}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => navigation.replace('SignIn')}>
@@ -64,7 +71,6 @@ export default function SignUpScreen({ navigation, setIsLogged }) {
         </View>
     );
 }
-
 
 const styles = StyleSheet.create({
     container: {

@@ -17,14 +17,15 @@ export default function App() {
 
   useEffect(() => {
     const checkLogin = async () => {
-      const user = await AsyncStorage.getItem('usuario');
-      setIsLogged(user ? true : false);
+      const logged = await AsyncStorage.getItem('isLoggedIn');
+      setIsLogged(logged === 'true');
     };
     checkLogin();
   }, []);
 
+
   if (isLogged === null) {
-    return null; // Pode colocar uma splash screen aqui
+    return null;
   }
 
   return (
@@ -44,7 +45,10 @@ export default function App() {
             <Stack.Screen name="SignIn" options={{ headerShown: false }}>
               {props => <SignInScreen {...props} setIsLogged={setIsLogged} />}
             </Stack.Screen>
-            <Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="SignUp" options={{ headerShown: false }}>
+              {props => <SignUpScreen {...props} setIsLogged={setIsLogged} />}
+            </Stack.Screen>
+
           </>
         )}
       </Stack.Navigator>
